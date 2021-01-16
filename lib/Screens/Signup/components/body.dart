@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
+import 'package:flutter_auth/Screens/OrderList/order_list.dart';
 import 'package:flutter_auth/Screens/Signup/components/background.dart';
 import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
 import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
 import 'package:flutter_auth/components/already_have_an_account_acheck.dart';
 import 'package:flutter_auth/components/rounded_button.dart';
-import 'package:flutter_auth/components/rounded_input_field.dart';
+import 'package:flutter_auth/components/rounded_email_input_field.dart';
 import 'package:flutter_auth/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
@@ -30,14 +31,22 @@ class Body extends StatelessWidget {
       'password': this._password
     });
 
-    callRestPostService(context: context, url: url, jsonObject: _jsonObject);
+    callRestPostService(
+        context: context,
+        url: url,
+        jsonObject: _jsonObject,
+        afterSuccess: (context, input) {
+          Navigator.of(context).pushReplacementNamed(OrderListScreen.routeName);
+          // showAlertDialog(context: context, message: input);
+        });
   }
 
   callRestPostService(
       {@required final context,
       @required final url,
       Map<String, String> headers,
-      @required final jsonObject}) {
+      @required final jsonObject,
+      @required Function afterSuccess}) {
     //necessary for BE content type, witout this BE rejetcs because of content type
     Map _headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -46,19 +55,16 @@ class Body extends StatelessWidget {
     // headers??_headers.addAll(headers);
     final _jsonObject = jsonObject;
     http.post(url, headers: _headers, body: _jsonObject).then((response) {
-      handleRestResponse(context, response, (context, input) {
-        //TODO: navigate to the main screen
-        showAlertDialog(context: context, message: input);
-      });
+      handleRestResponse(context, response, afterSuccess);
     }).catchError((error) {
       print(error);
     });
   }
 
-  handleRestResponse(context, response, Function nextStep) {
+  handleRestResponse(context, response, Function afterSuccess) {
     print('response: ' + response.body);
     if (response.statusCode == 200) {
-      nextStep?.call(context,'messagim');
+      afterSuccess?.call(context, response);
     } else {
       handleRestError(context, response);
     }
@@ -122,7 +128,7 @@ class Body extends StatelessWidget {
                 "assets/icons/signup.svg",
                 height: size.height * 0.35,
               ),
-              RoundedInputField(
+              RoundedEmailInputField(
                 hintText: "Your Email",
                 onChanged: (value) {
                   this._email = value;
@@ -145,14 +151,8 @@ class Body extends StatelessWidget {
               AlreadyHaveAnAccountCheck(
                 login: false,
                 press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return LoginScreen();
-                      },
-                    ),
-                  );
+                  Navigator.of(context)
+                      .pushReplacementNamed(LoginScreen.routeName);
                 },
               ),
               OrDivider(),
