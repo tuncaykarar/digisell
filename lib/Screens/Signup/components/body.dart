@@ -10,6 +10,7 @@ import 'package:flutter_auth/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
+    final FocusNode _passwordFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -31,9 +32,11 @@ class Body extends StatelessWidget {
               RoundedInputField(
                 hintText: "Your Email",
                 onChanged: (value) {},
+                nextFocusNode: _passwordFocusNode,
               ),
               RoundedPasswordField(
                 onChanged: (value) {},
+                passwordFocusNode: _passwordFocusNode,
               ),
               RoundedButton(
                 text: "SIGNUP",
