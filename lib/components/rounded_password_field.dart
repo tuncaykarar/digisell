@@ -5,10 +5,12 @@ import 'package:flutter_auth/constants.dart';
 class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final FocusNode passwordFocusNode;
+  final FormFieldValidator<String> validator;
   const RoundedPasswordField({
     Key key,
     this.onChanged,
     this.passwordFocusNode,
+    this.validator,
   }) : super(key: key);
 
   @override
@@ -18,6 +20,13 @@ class RoundedPasswordField extends StatelessWidget {
         obscureText: true,
         focusNode: this.passwordFocusNode,
         onChanged: onChanged,
+        validator: (value) {
+          validator?.call(value);
+          if(value.length<8){
+            return 'password is too short.';
+          }
+          return null;
+        },
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
           hintText: "Password",
