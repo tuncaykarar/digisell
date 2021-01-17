@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Welcome/welcome_screen.dart';
-import 'package:flutter_auth/constants.dart';
+import 'package:digisell/Screens/Welcome/welcome_screen.dart';
+import 'package:digisell/constants.dart';
 import 'Screens/Login/login_screen.dart';
 import 'Screens/OrderList/order_list.dart';
 import 'Screens/Settings/settings_screen.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/OrderList/order_list.dart';
-import 'package:flutter_auth/Screens/Settings/settings_screen.dart';
+import 'package:digisell/Screens/OrderList/order_list.dart';
+import 'package:digisell/Screens/Settings/settings_screen.dart';
+import 'package:digisell/Screens/Login/login_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -27,6 +28,15 @@ class AppDrawer extends StatelessWidget {
           onTap: () {
             Navigator.of(context)
                   .pushReplacementNamed(SettingsScreen.routeName);
+          },
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.logout),
+          title: Text('Logout'),
+          onTap: () {
+            Navigator.of(context)
+                  .pushReplacementNamed(LoginScreen.routeName);
           },
         ),
       ]),

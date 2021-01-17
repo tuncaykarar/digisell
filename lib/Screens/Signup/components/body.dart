@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Screens/Login/login_screen.dart';
-import 'package:flutter_auth/Screens/OrderList/order_list.dart';
-import 'package:flutter_auth/Screens/Signup/components/background.dart';
-import 'package:flutter_auth/Screens/Signup/components/or_divider.dart';
-import 'package:flutter_auth/Screens/Signup/components/social_icon.dart';
-import 'package:flutter_auth/components/already_have_an_account_acheck.dart';
-import 'package:flutter_auth/components/rounded_button.dart';
-import 'package:flutter_auth/components/rounded_email_input_field.dart';
-import 'package:flutter_auth/components/rounded_password_field.dart';
+import 'package:digisell/Screens/Login/login_screen.dart';
+import 'package:digisell/Screens/OrderList/order_list.dart';
+import 'package:digisell/Screens/Signup/components/background.dart';
+import 'package:digisell/Screens/Signup/components/or_divider.dart';
+import 'package:digisell/Screens/Signup/components/social_icon.dart';
+import 'package:digisell/components/already_have_an_account_acheck.dart';
+import 'package:digisell/components/rounded_button.dart';
+import 'package:digisell/components/rounded_email_input_field.dart';
+import 'package:digisell/components/rounded_password_field.dart';
+import 'package:digisell/utilities/rest_service_utility.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Body extends StatelessWidget {
   final FocusNode _passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
-  var _email = "";
-  var _password = "";
+  var _email = '';
+  var _password = '';
 
   void _saveForm(context) {
     _formKey.currentState.validate();
@@ -31,7 +31,7 @@ class Body extends StatelessWidget {
       'password': this._password
     });
 
-    callRestPostService(
+    RestServiceUtility.callRestPostService(
         context: context,
         url: url,
         jsonObject: _jsonObject,
@@ -41,73 +41,7 @@ class Body extends StatelessWidget {
         });
   }
 
-  callRestPostService(
-      {@required final context,
-      @required final url,
-      Map<String, String> headers,
-      @required final jsonObject,
-      @required Function afterSuccess}) {
-    //necessary for BE content type, witout this BE rejetcs because of content type
-    Map _headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    };
-    //TODO:fix below line
-    // headers??_headers.addAll(headers);
-    final _jsonObject = jsonObject;
-    http.post(url, headers: _headers, body: _jsonObject).then((response) {
-      handleRestResponse(context, response, afterSuccess);
-    }).catchError((error) {
-      print(error);
-    });
-  }
-
-  handleRestResponse(context, response, Function afterSuccess) {
-    print('response: ' + response.body);
-    if (response.statusCode == 200) {
-      afterSuccess?.call(context, response);
-    } else {
-      handleRestError(context, response);
-    }
-  }
-
-  handleRestError(context, response) {
-    var _message = 'Sorry an error occured...';
-    if (response.statusCode == 500) {
-      //TODO: get error from response
-      //var _serverErrorMessage = response['error'];
-      //_message = _serverErrorMessage ??= 'Sorry an error occured...';
-      _message = 'Sorry an error occured...';
-    }
-    showAlertDialog(context: context, message: _message);
-    throw Exception(_message);
-  }
-
-  showAlertDialog({BuildContext context, String message}) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Message"),
-      content: Text(message),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {
